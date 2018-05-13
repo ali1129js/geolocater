@@ -1,21 +1,86 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+/**
+ * @Author: Ali
+ * @Date:   2018-05-13T17:37:04+02:00
+ * @Last modified by:   Ali
+ * @Last modified time: 2018-05-13T19:01:27+02:00
+ */
 
+import React, { Component } from 'react'
+import logo from './logo.svg'
+import './App.css'
+
+const endpoint ='http://ip-api.com/json'
+const API_KEY = '32941f4c12936fc51133cb69ca8f8b8a'
+const fetchOption = {
+  method:'GET'
+}
 class App extends Component {
+  constructor(){
+    super()
+    this.state = {'yourLoc': {}};
+  }
+  componentDidMount() {
+    fetch(endpoint, fetchOption)
+    .then(d => d.json())
+    .then(d => {
+      this.setState({yourLoc: d
+      })
+    })
+    .catch(err => {
+      console.error(err)
+    })
+}
+getWeather = async (e) => {
+  e.preventDefault()
+  const api_call = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${this.state.yourLoc.city},${this.state.yourLoc.countryCode}&appid=${API_KEY}&units=metric`)
+  const data = await api_call.json()
+   if(data.main) {
+    console.log(data)
+    this.setState({
+      temperature: data.main.temp,
+      city: data.name,
+      country: data.sys.country,
+      humidity: data.main.humidity,
+      description: data.weather[0].description,
+      error: ''
+    })
+  }
+  else if(data.cod){
+    this.setState({
+      temperature: undefined,
+      city: undefined,
+      country: undefined,
+      humidity: undefined,
+      description: undefined,
+      error: 'City not Found'
+    })
+  }
+}
   render() {
+    if(!this.state.city) {
+      return (
+        <div className="App">
+          <header className="App-header" onClick={this.getWeather.bind(this)}>
+            <img src={logo} className="App-logo" alt="logo" />
+            <h1 className="App-title">Welcome from {this.state.yourLoc.city}</h1>
+          </header>
+        </div>
+      )
+    }
+    const { temperature, description,city } = this.state
     return (
       <div className="App">
-        <header className="App-header">
+        <header className="App-header" onClick={this.getWeather.bind(this)}>
           <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
+          <h1 className="App-title">Welcome from {this.state.yourLoc.city}</h1>
         </header>
         <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
+          The temperature in {city} is: {temperature}°C
+          The Conditions: <i> {description} </i>
         </p>
       </div>
-    );
+    )
   }
 }
 
-export default App;
+export default App
