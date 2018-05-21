@@ -2,11 +2,11 @@
  * @Author: Ali
  * @Date:   2018-05-13T17:37:04+02:00
  * @Last modified by:   Ali
- * @Last modified time: 2018-05-14T09:32:42+02:00
+ * @Last modified time: 2018-05-21T19:54:58+02:00
  */
 
 import React, { Component } from 'react'
-import AudioContext from './AudioContext'
+//import AudioContext from './AudioContext'
 import logo from './logo.svg'
 import './App.css'
 
@@ -76,7 +76,6 @@ getWeather = async (e) => {
           {city} today: {temperature}°C <i>{description}</i>
           <img src={logo} className="App-logo" alt="logo" />
         </header>
-        <AudioContext />
       </div>
     )
   }
